@@ -1,7 +1,6 @@
 import express from 'express'
 import multer from 'multer'
-import ffmpegPath from 'ffmpeg-static'
-import { spawn } from 'node:child_process'
+import { execFileSync, spawn } from 'node:child_process'
 import { mkdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -11,10 +10,16 @@ const workDir = path.join(root, '.work')
 const upload = multer({ dest: workDir, limits: { files: 50, fileSize: 500 * 1024 * 1024 } })
 const app = express()
 const port = Number(process.env.PORT ?? 4317)
+const ffmpegPath = process.env.FFMPEG_PATH ?? (() => {
+  try {
+    return execFileSync(process.env.PYTHON ?? 'python', ['-c', 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())'], { encoding: 'utf8' }).trim()
+  } catch {
+    return 'ffmpeg'
+  }
+})()
 
 function convertToMp3(input: string, output: string) {
   return new Promise<void>((resolve, reject) => {
-    if (!ffmpegPath) return reject(new Error('找不到 ffmpeg-static'))
     const process = spawn(ffmpegPath, ['-y', '-i', input, '-codec:a', 'libmp3lame', '-q:a', '2', output], { windowsHide: true })
     let error = ''
     process.stderr.on('data', chunk => { error += chunk.toString() })

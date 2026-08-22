@@ -10,7 +10,9 @@ if (-not (Test-Path '.venv')) { python -m venv .venv }
 & .\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 & .\.venv\Scripts\python.exe -m pip install -r worker\requirements.txt
 npm install
+if ($LASTEXITCODE -ne 0) { throw 'npm install failed. Check network access and run the installer again.' }
 npm run build
+if ($LASTEXITCODE -ne 0) { throw 'Build failed. Review the error above.' }
 Write-Host ''
 Write-Host 'Setup complete. FunASR models will download on first transcription.' -ForegroundColor Green
 Write-Host 'Start: .\.venv\Scripts\Activate.ps1; npm start' -ForegroundColor Green
