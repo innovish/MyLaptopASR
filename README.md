@@ -15,7 +15,7 @@ Set-ExecutionPolicy -Scope Process Bypass
 npm start
 ```
 
-打开 http://localhost:4317。首次识别会从 ModelScope/Hugging Face 下载模型，之后可离线使用缓存模型。
+打开 http://localhost:4317。首次识别会从 ModelScope/Hugging Face 下载模型，之后可离线使用缓存模型。安装脚本会从官方 npm registry 下载依赖，以确保 Windows 原生 FFmpeg/构建二进制完整。
 
 ## 配置
 

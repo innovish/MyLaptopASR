@@ -9,7 +9,7 @@ if (-not (Test-Path '.venv')) { python -m venv .venv }
 & .\.venv\Scripts\python.exe -m pip install --upgrade pip
 & .\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 & .\.venv\Scripts\python.exe -m pip install -r worker\requirements.txt
-npm install
+npm install --registry=https://registry.npmjs.org/
 if ($LASTEXITCODE -ne 0) { throw 'npm install failed. Check network access and run the installer again.' }
 npm run build
 if ($LASTEXITCODE -ne 0) { throw 'Build failed. Review the error above.' }
