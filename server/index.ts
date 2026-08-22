@@ -5,7 +5,11 @@ import { mkdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const serverDir = path.dirname(fileURLToPath(import.meta.url))
+const buildDir = path.resolve(serverDir, '..')
+const isBuilt = path.basename(buildDir) === 'dist'
+const root = isBuilt ? path.resolve(buildDir, '..') : buildDir
+const clientDir = isBuilt ? path.join(buildDir, 'client') : path.join(root, 'dist', 'client')
 const workDir = path.join(root, '.work')
 const upload = multer({ dest: workDir, limits: { files: 50, fileSize: 500 * 1024 * 1024 } })
 const app = express()
@@ -62,8 +66,8 @@ app.post('/api/process', upload.array('files', 50), async (request, response) =>
 })
 
 app.use('/media', express.static(workDir))
-if (process.env.NODE_ENV === 'production') app.use(express.static(path.join(root, 'dist/client')))
-app.get(/.*/, (_request, response) => response.sendFile(path.join(root, process.env.NODE_ENV === 'production' ? 'dist/client/index.html' : 'index.html')))
+app.use(express.static(clientDir))
+app.get(/.*/, (_request, response) => response.sendFile(path.join(clientDir, 'index.html')))
 
 await mkdir(workDir, { recursive: true })
 app.listen(port, () => console.log(`Local ASR Studio: http://localhost:${port}`))
