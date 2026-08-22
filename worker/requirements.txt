@@ -1,0 +1,4 @@
+funasr>=1.2.6
+modelscope>=1.29.0
+
+# PyTorch is installed separately by install.ps1 to select a CPU-compatible wheel.
