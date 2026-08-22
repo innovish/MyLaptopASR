@@ -2,8 +2,8 @@ $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 
 Write-Host '== Local ASR Studio setup ==' -ForegroundColor Cyan
-if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw '需要先安装 Node.js 20 或更高版本: https://nodejs.org/' }
-if (-not (Get-Command python -ErrorAction SilentlyContinue)) { throw '需要先安装 Python 3.10-3.13，并勾选 Add Python to PATH' }
+if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw 'Install Node.js 20 or newer first: https://nodejs.org/' }
+if (-not (Get-Command python -ErrorAction SilentlyContinue)) { throw 'Install Python 3.10-3.13 first and enable Add Python to PATH.' }
 
 if (-not (Test-Path '.venv')) { python -m venv .venv }
 & .\.venv\Scripts\python.exe -m pip install --upgrade pip
@@ -12,5 +12,5 @@ if (-not (Test-Path '.venv')) { python -m venv .venv }
 npm install
 npm run build
 Write-Host ''
-Write-Host '安装完成。首次识别会自动下载 FunASR 模型。' -ForegroundColor Green
-Write-Host '启动: .\.venv\Scripts\Activate.ps1; npm start' -ForegroundColor Green
+Write-Host 'Setup complete. FunASR models will download on first transcription.' -ForegroundColor Green
+Write-Host 'Start: .\.venv\Scripts\Activate.ps1; npm start' -ForegroundColor Green
