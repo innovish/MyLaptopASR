@@ -5,6 +5,11 @@ import sys
 
 from funasr import AutoModel
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
 model = AutoModel(
     model=os.getenv("FUNASR_MODEL", "paraformer-zh"),
     vad_model=os.getenv("FUNASR_VAD_MODEL", "fsmn-vad"),

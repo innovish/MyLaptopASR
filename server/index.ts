@@ -33,7 +33,10 @@ function convertToMp3(input: string, output: string) {
 
 function callFunAsr(filePath: string): Promise<{ start: number; end: number; text: string }[]> {
   return new Promise((resolve, reject) => {
-    const worker = spawn(process.env.PYTHON ?? 'python', [path.join(root, 'worker', 'transcribe.py'), filePath], { windowsHide: true })
+    const worker = spawn(process.env.PYTHON ?? 'python', [path.join(root, 'worker', 'transcribe.py'), filePath], {
+      windowsHide: true,
+      env: { ...process.env, PYTHONIOENCODING: 'utf-8' }
+    })
     let stdout = ''
     let stderr = ''
     worker.stdout.on('data', chunk => { stdout += chunk.toString() })
