@@ -51,7 +51,7 @@ function App() {
 
   return <main className="shell">
     <header className="topbar"><div className="mark">ASR<span>·</span>LOCAL</div><div className="status"><i />本机运行 · FunASR</div></header>
-    <section className="intro"><p className="kicker">PRIVATE TRANSCRIPTION DESK</p><h1>把声音，留在<br /><em>自己的电脑里。</em></h1><p className="lede">批量转码 WAV → MP3，并用本地 FunASR 生成可检索、带时间戳的文字。</p></section>
+    <section className="intro"><p className="kicker">PRIVATE TRANSCRIPTION DESK</p><h1>记录灵感，<br /><em>构筑本体</em></h1><p className="lede">批量转码 WAV → MP3，并用本地 FunASR 生成可检索、带时间戳的文字。</p></section>
     <section className="workspace">
       <div className="upload-panel" onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); addFiles(event.dataTransfer.files) }}>
         <div className="upload-icon">↥</div><h2>拖入 WAV 文件</h2><p>支持一次选择多个文件，按顺序逐个处理</p>
