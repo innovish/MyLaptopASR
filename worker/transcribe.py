@@ -28,4 +28,4 @@ for sentence in raw:
     segments.append({"start": float(start), "end": float(end), "text": sentence["text"].strip()})
 if not segments and item.get("text"):
     segments = [{"start": 0, "end": 0, "text": item["text"].strip()}]
-print(json.dumps({"segments": segments}, ensure_ascii=False))
+print("__ASR_RESULT__" + json.dumps({"segments": segments}, ensure_ascii=False))

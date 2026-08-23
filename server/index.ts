@@ -40,7 +40,13 @@ function callFunAsr(filePath: string): Promise<{ start: number; end: number; tex
     worker.stderr.on('data', chunk => { stderr += chunk.toString() })
     worker.on('close', code => {
       if (code !== 0) return reject(new Error(stderr.trim() || 'FunASR 识别失败'))
-      try { resolve(JSON.parse(stdout).segments ?? []) } catch { reject(new Error('FunASR 返回了无法解析的结果')) }
+      const resultLine = stdout.split(/\r?\n/).find(line => line.startsWith('__ASR_RESULT__'))
+      try {
+        if (!resultLine) throw new Error('missing result marker')
+        resolve(JSON.parse(resultLine.slice('__ASR_RESULT__'.length)).segments ?? [])
+      } catch {
+        reject(new Error('FunASR 返回了无法解析的结果'))
+      }
     })
   })
 }
