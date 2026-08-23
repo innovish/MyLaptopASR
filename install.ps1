@@ -7,8 +7,10 @@ if (-not (Get-Command python -ErrorAction SilentlyContinue)) { throw 'Install Py
 
 if (-not (Test-Path '.venv')) { python -m venv .venv }
 & .\.venv\Scripts\python.exe -m pip install --upgrade pip
-& .\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+& .\.venv\Scripts\python.exe -m pip install torch==2.11.0+cpu torchaudio==2.11.0+cpu --index-url https://download.pytorch.org/whl/cpu
 & .\.venv\Scripts\python.exe -m pip install -r worker\requirements.txt
+& .\.venv\Scripts\python.exe -c "import torch, torchaudio, funasr; print(('PyTorch ' + torch.__version__ + ' and torchaudio ' + torchaudio.__version__ + ' are ready.'))"
+if ($LASTEXITCODE -ne 0) { throw 'FunASR Python dependencies are incomplete. Check the Python installation above.' }
 Write-Host 'Python and FunASR dependencies are ready.' -ForegroundColor Green
 Write-Host 'Installing Node.js dependencies from the official npm registry...' -ForegroundColor Cyan
 npm install --registry=https://registry.npmjs.org/ --fetch-timeout=60000 --fetch-retries=1
