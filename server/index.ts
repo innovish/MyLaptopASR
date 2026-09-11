@@ -1,6 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 import { execFileSync, spawn } from 'node:child_process'
+import { existsSync } from 'node:fs'
 import { mkdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -8,15 +9,18 @@ import { fileURLToPath } from 'node:url'
 const serverDir = path.dirname(fileURLToPath(import.meta.url))
 const buildDir = path.resolve(serverDir, '..')
 const isBuilt = path.basename(buildDir) === 'dist'
-const root = isBuilt ? path.resolve(buildDir, '..') : buildDir
+const root = isBuilt ? path.resolve(buildDir, '..') : path.resolve(serverDir, '..')
 const clientDir = isBuilt ? path.join(buildDir, 'client') : path.join(root, 'dist', 'client')
 const workDir = path.join(root, '.work')
+const pythonExecutable = process.env.PYTHON ?? (existsSync(path.join(root, '.venv', 'Scripts', 'python.exe'))
+  ? path.join(root, '.venv', 'Scripts', 'python.exe')
+  : 'python')
 const upload = multer({ dest: workDir, limits: { files: 50, fileSize: 500 * 1024 * 1024 } })
 const app = express()
 const port = Number(process.env.PORT ?? 4317)
 const ffmpegPath = process.env.FFMPEG_PATH ?? (() => {
   try {
-    return execFileSync(process.env.PYTHON ?? 'python', ['-c', 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())'], { encoding: 'utf8' }).trim()
+    return execFileSync(pythonExecutable, ['-c', 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())'], { encoding: 'utf8' }).trim()
   } catch {
     return 'ffmpeg'
   }
@@ -33,7 +37,7 @@ function convertToMp3(input: string, output: string) {
 
 function callFunAsr(filePath: string): Promise<{ start: number; end: number; text: string }[]> {
   return new Promise((resolve, reject) => {
-    const worker = spawn(process.env.PYTHON ?? 'python', [path.join(root, 'worker', 'transcribe.py'), filePath], {
+    const worker = spawn(pythonExecutable, [path.join(root, 'worker', 'transcribe.py'), filePath], {
       windowsHide: true,
       env: { ...process.env, PYTHONIOENCODING: 'utf-8' }
     })
